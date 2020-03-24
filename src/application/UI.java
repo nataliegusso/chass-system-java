@@ -5,7 +5,7 @@ import chess.ChessPiece;
 public class UI {
 
 	public static void printBoard(ChessPiece[][] pieces){
-		for (int i=0 ; i<pieces.length; i++) {      //Da onde vem pieces.length?
+		for (int i=0 ; i<pieces.length; i++) {      //Lembre: pieces.length lê o tamanho da matriz sem precisar colocar o tamanho
 			System.out.print((8 - i) + " ");
 			for (int j=0 ; j<pieces.length; j++) {  //length matriz quadrada
 				printPiece(pieces[i][j]);
