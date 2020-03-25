@@ -32,6 +32,7 @@ public class ChessMatch {
 	private void placeNewPiece(char column, int row, ChessPiece piece) {  //Passa as posições na coordenada do xadrez
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
+	
 	private void initialSetup() {  //Método que coloca as peças no tabuleiro, coordenadas do xadrez
 		placeNewPiece('a', 8, new Rook(board, Color.BLACK));
 		placeNewPiece('b', 8, new Knights(board, Color.BLACK));
