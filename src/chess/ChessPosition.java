@@ -3,13 +3,13 @@ package chess;
 import boardgame.Position;
 
 public class ChessPosition {
-
+	
 	private char column;
 	private int row;
-
+	
 	public ChessPosition(char column, int row) {
-		if (column < 'a' || column > 'h' || row < 1 || row > 8) {;  // || alt+124 
-			throw new ChessException("Error instantiating ChessPosition. Valid values are a1 to h8.");
+		if (column < 'a' || column > 'h' || row < 1 || row > 8) {	// || alt+124 
+			throw new ChessException("Error instantiating ChessPosition. Valid values are from a1 to h8.");
 		}
 		this.column = column;
 		this.row = row;
@@ -24,15 +24,15 @@ public class ChessPosition {
 	}
 
 	protected Position toPosition() {
-		return new Position (8 - row, column - 'a');   //Posição do xadrez convertida na posição da matriz (ij)
+		return new Position(8 - row, column - 'a');   //Posição do xadrez convertida na posição da matriz (ij)
 	}
 	
 	protected static ChessPosition fromPosition(Position position) {
-		return new ChessPosition ((char)('a' - position.getColumn()), 8 - position.getRow());//Posição da matriz convertida na posição do xadrez (ji)
+		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow()); //Posição da matriz convertida na posição do xadrez (ji)
 	}
 	
 	@Override
 	public String toString() {
-		return "" + column + row; //"" força o compilador a entender que é uma concatenação de strings
+		return "" + column + row;  //"" força o compilador a entender que é uma concatenação de strings
 	}
 }
