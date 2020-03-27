@@ -18,7 +18,7 @@ public class Program {
 		ChessMatch chessMatch = new ChessMatch();	//Intanciar a partida
 		List<ChessPiece> captured = new ArrayList<>();
 		
-		while (true) {
+		while (!chessMatch.getCheckMate()) {		//Enquanto não estiver com check mate 
 			try {
 				UI.clearScreen();					//Limpa a tela (tudo que foi digitado antes)
 				//UI.printBoard(chessMatch.getPieces()); //Criando uma classe user interface. Esse método recebe a matriz de peças //Imprimir peças
@@ -50,5 +50,7 @@ public class Program {
 				sc.nextLine();
 			}
 		}
+		UI.clearScreen();		//Finaliza a partida
+		UI.printMatch(chessMatch, captured);
 	}
 }
