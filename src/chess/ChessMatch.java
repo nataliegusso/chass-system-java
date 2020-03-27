@@ -91,7 +91,8 @@ public class ChessMatch {
 	}
 	
 	private Piece makeMove(Position source, Position target) {
-		Piece p = board.removePiece(source);				//Retirei a peça da posição de origem
+		ChessPiece p = (ChessPiece)board.removePiece(source);		//Retirei a peça da posição de origem
+		p.increaseMoveCount();
 		Piece capturedPiece = board.removePiece(target);	//Remover a possível peça do destino (capturada)
 		board.placePiece(p, target);						//Coloquei a peça na posição de destino
 		
@@ -103,7 +104,8 @@ public class ChessMatch {
 	}
 	
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
-		Piece p = board.removePiece(target);			//Desfaz o que foi feito em makeMove 
+		ChessPiece p = (ChessPiece)board.removePiece(target);		//Desfaz o que foi feito em makeMove 
+		p.decreaseMoveCount();
 		board.placePiece(p, source);
 		
 		if(capturedPiece != null) {
@@ -193,18 +195,11 @@ public class ChessMatch {
 	}
 	
 	private void initialSetup() {		//Método que coloca as peças no tabuleiro, coordenadas do xadrez
-        placeNewPiece('h', 7, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 1, new King(board, Color.WHITE));
-
-        placeNewPiece('b', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('a', 8, new King(board, Color.BLACK));
-        
-		/*placeNewPiece('a', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('a', 8, new Rook(board, Color.BLACK));
 		placeNewPiece('b', 8, new Knights(board, Color.BLACK));
 		placeNewPiece('c', 8, new Bishops(board, Color.BLACK));
-		placeNewPiece('d', 8, new King(board, Color.BLACK));
-		placeNewPiece('e', 8, new Queen(board, Color.BLACK));
+		placeNewPiece('d', 8, new Queen(board, Color.BLACK));
+		placeNewPiece('e', 8, new King(board, Color.BLACK));
 		placeNewPiece('f', 8, new Bishops(board, Color.BLACK));
 		placeNewPiece('g', 8, new Knights(board, Color.BLACK));
 		placeNewPiece('h', 8, new Rook(board, Color.BLACK));
@@ -212,28 +207,28 @@ public class ChessMatch {
 		placeNewPiece('b', 7, new Pawns(board, Color.BLACK));
 		placeNewPiece('c', 7, new Pawns(board, Color.BLACK));
 		placeNewPiece('d', 7, new Pawns(board, Color.BLACK));
-		placeNewPiece('e', 7, new Rook(board, Color.BLACK));
+		placeNewPiece('e', 7, new Pawns(board, Color.BLACK));
 		placeNewPiece('f', 7, new Pawns(board, Color.BLACK));
 		placeNewPiece('g', 7, new Pawns(board, Color.BLACK));
 		placeNewPiece('h', 7, new Pawns(board, Color.BLACK));
 
 		placeNewPiece('a', 2, new Pawns(board, Color.WHITE));
 		placeNewPiece('b', 2, new Pawns(board, Color.WHITE));
-		placeNewPiece('c', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('d', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('e', 2, new Rook(board, Color.WHITE));
+		placeNewPiece('c', 2, new Pawns(board, Color.WHITE));
+		placeNewPiece('d', 2, new Pawns(board, Color.WHITE));
+		placeNewPiece('e', 2, new Pawns(board, Color.WHITE));
 		placeNewPiece('f', 2, new Pawns(board, Color.WHITE));
 		placeNewPiece('g', 2, new Pawns(board, Color.WHITE));
 		placeNewPiece('h', 2, new Pawns(board, Color.WHITE));
 		placeNewPiece('a', 1, new Rook(board, Color.WHITE));
 		placeNewPiece('b', 1, new Knights(board, Color.WHITE));
 		placeNewPiece('c', 1, new Bishops(board, Color.WHITE));
-		placeNewPiece('d', 1, new King(board, Color.WHITE));
-		placeNewPiece('e', 1, new Queen(board, Color.WHITE));
+		placeNewPiece('d', 1, new Queen(board, Color.WHITE));
+		placeNewPiece('e', 1, new King(board, Color.WHITE));
 		placeNewPiece('f', 1, new Bishops(board, Color.WHITE));
 		placeNewPiece('g', 1, new Knights(board, Color.WHITE));
 		placeNewPiece('h', 1, new Rook(board, Color.WHITE));
-*/	}
+	}
 
 /*	private void initialSetup() {  //Método que coloca as peças no tabuleiro, coordenadas da matriz
 		board.placePiece(new Rook(board, Color.BLACK), new Position(0,0));
