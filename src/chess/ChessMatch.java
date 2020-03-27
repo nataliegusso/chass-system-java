@@ -2,11 +2,11 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
-
 import chess.pieces.Bishops;
 import chess.pieces.King;
 import chess.pieces.Knights;
@@ -19,6 +19,7 @@ public class ChessMatch {
 	private int turn;
 	private Color currentPlayer;
 	private Board board;
+	private boolean check;
 	
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -38,6 +39,9 @@ public class ChessMatch {
 		return currentPlayer;
 	}
 	
+	public boolean getCheck() {
+		return check;
+	}
 	
 	public ChessPiece[][] getPieces() {
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
@@ -63,6 +67,14 @@ public class ChessMatch {
 		validateTargetPosition(source, target);		//valida a posição de destino
 
 		Piece capturedPiece = makeMove(source, target);
+		
+		if (testCheck(currentPlayer)) {		// testa se o movimento colocou o jogador em check, pq não pode ser feito este movimento
+			undoMove(source, target, capturedPiece);	//desfaz o movimento
+			throw new ChessException("You can't put yourself in check");
+		}
+
+		check = (testCheck(opponent(currentPlayer))) ? true : false;  //testa se o oponente ficou em check
+		
 		nextTurn();		//Troca o turno (rodada) e jogador
 		return (ChessPiece)capturedPiece;
 	}
@@ -76,10 +88,20 @@ public class ChessMatch {
 			piecesOnTheBoard.remove(capturedPiece);
 			capturedPieces.add(capturedPiece);
 		}
-		
 		return capturedPiece;
 	}
 	
+	private void undoMove(Position source, Position target, Piece capturedPiece) {
+		Piece p = board.removePiece(target);			//Desfaz o que foi feito em makeMove 
+		board.placePiece(p, source);
+		
+		if(capturedPiece != null) {
+			board.placePiece(capturedPiece, target);
+			capturedPieces.remove(capturedPiece);
+			piecesOnTheBoard.add(capturedPiece);
+		}
+	}
+		
 	private void validateSourcePosition(Position position) {
 		if (!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position");
@@ -103,6 +125,32 @@ public class ChessMatch {
 		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;  //Se currentPlayer é branco, vira preto, senão vira branco
 	}
 	
+	private Color opponent(Color color) {
+		return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
+	
+	private ChessPiece king(Color color) {
+		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());  //Downcast de chesspiece pq é lá que a peça tem cor
+		for (Piece p : list) {
+			if (p instanceof King) {
+				return (ChessPiece)p;
+			}
+		}
+		throw new IllegalStateException("There is no " + color + " king on the board");  //se não achar o rei
+	}
+	
+	private boolean testCheck(Color color) {  
+		Position kingPosition = king(color).getChessPosition().toPosition();
+		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == opponent(color)).collect(Collectors.toList());
+		for (Piece p : opponentPieces) {	//varre todas as peças adversárias para ver se alguma leva à poção do rei
+			boolean[][] mat = p.possibleMoves();  //matriz de movimentos possíveis de p: se nesta matriz a posição correspondente à posição do rei for true, o rei está em check
+			if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
+				return true;       //pega e retorna a cor pq está testando se o rei desta cor está em check
+			}
+		}
+		return false;
+	}
+	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {	 //Passa as posições na coordenada do xadrez
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 		piecesOnTheBoard.add(piece);
@@ -112,8 +160,8 @@ public class ChessMatch {
 		placeNewPiece('a', 8, new Rook(board, Color.BLACK));
 		placeNewPiece('b', 8, new Knights(board, Color.BLACK));
 		placeNewPiece('c', 8, new Bishops(board, Color.BLACK));
-		placeNewPiece('d', 8, new Queen(board, Color.BLACK));
-		placeNewPiece('e', 8, new King(board, Color.BLACK));
+		placeNewPiece('d', 8, new King(board, Color.BLACK));
+		placeNewPiece('e', 8, new Queen(board, Color.BLACK));
 		placeNewPiece('f', 8, new Bishops(board, Color.BLACK));
 		placeNewPiece('g', 8, new Knights(board, Color.BLACK));
 		placeNewPiece('h', 8, new Rook(board, Color.BLACK));

@@ -1,5 +1,5 @@
-package application;
-
+package application;   //Teclas de atalho: https://blog.algaworks.com/atalhos-e-configuracoes-para-ganhar-produtividade-com-eclipse/
+						//https://help.github.com/pt/github/getting-started-with-github/keyboard-shortcuts
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
